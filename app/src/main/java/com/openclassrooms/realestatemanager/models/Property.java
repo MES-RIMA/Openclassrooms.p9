@@ -1,37 +1,43 @@
 package com.openclassrooms.realestatemanager.models;
 
+
+import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.List;
 
 public class Property {
-    private long id;
+    public static final DateTimeFormatter PROPERTY_RELATED_DATE_FORMATTER =
+            DateTimeFormatter.ofPattern("MM/dd/yyyy");
+    private int id;
     private Type type;
     private double price;
     private double surface;
     private int numberOfRooms;
     private String description;
     private List<Photo> photoList;
-    private String address;
-    private List<String> pointOfInterestNearby;
+    private Address address;
+    private List<PointOfInterest> pointOfInterestNearby;
     private boolean isAvailable;
-    private long availableSince;
+    private long publicationDate;
     private long saleDate;
     private RealEstateAgent agent;
 
+    public Property() {
+    }
+
     public Property(
-            long id,
             Type type,
             double price,
             double surface,
             int numberOfRooms,
             String description,
             List<Photo> photoList,
-            String address,
-            List<String> pointOfInterestNearby,
+            Address address,
+            List<PointOfInterest> pointOfInterestNearby,
             boolean isAvailable,
-            long availableSince,
+            long publicationDate,
             long saleDate,
             RealEstateAgent agent) {
-        this.id = id;
         this.type = type;
         this.price = price;
         this.surface = surface;
@@ -41,16 +47,16 @@ public class Property {
         this.address = address;
         this.pointOfInterestNearby = pointOfInterestNearby;
         this.isAvailable = isAvailable;
-        this.availableSince = availableSince;
+        this.publicationDate = publicationDate;
         this.saleDate = saleDate;
         this.agent = agent;
     }
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -98,40 +104,42 @@ public class Property {
         return photoList;
     }
 
-    public void setPhotoList(List<Photo> photoList) {
-        this.photoList = photoList;
+    @SuppressWarnings("unchecked")
+    public void setPhotoList(List<? extends Photo> photoList) {
+        this.photoList = (List<Photo>) photoList;
     }
 
-    public String getAddress() {
+    public Address getAddress() {
         return address;
     }
 
-    public void setAddress(String address) {
+    public void setAddress(Address address) {
         this.address = address;
     }
 
-    public List<String> getPointOfInterestNearby() {
+    public List<PointOfInterest> getPointOfInterestNearby() {
         return pointOfInterestNearby;
     }
 
-    public void setPointOfInterestNearby(List<String> pointOfInterestNearby) {
-        this.pointOfInterestNearby = pointOfInterestNearby;
+    @SuppressWarnings("unchecked")
+    public void setPointOfInterestNearby(List<? extends PointOfInterest> pointOfInterestNearby) {
+        this.pointOfInterestNearby = (List<PointOfInterest>) pointOfInterestNearby;
     }
 
-    public boolean isAvailable() {
+    public boolean isSold() {
         return isAvailable;
     }
 
-    public void setAvailable(boolean available) {
+    public void isSold(boolean available) {
         isAvailable = available;
     }
 
-    public long getAvailableSince() {
-        return availableSince;
+    public long getPublicationDate() {
+        return publicationDate;
     }
 
-    public void setAvailableSince(long availableSince) {
-        this.availableSince = availableSince;
+    public void setPublicationDate(long availableSince) {
+        this.publicationDate = availableSince;
     }
 
     public long getSaleDate() {
@@ -150,12 +158,70 @@ public class Property {
         this.agent = agent;
     }
 
-    // -------------- INNER -------------- //
 
-    enum Type {
+    // ----------------------   INNERS  ----------------------- //
+
+    public static class PointOfInterest {
+        private int id;
+        private final String name;
+
+        public PointOfInterest(String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public int getId() {
+            return id;
+        }
+    }
+
+    public static class Address {
+        private String locality;
+        private String postalCode;
+        private String formattedAddress;
+
+        public Address(String locality, String postalCode, String formattedAddress) {
+            this.locality = locality;
+            this.postalCode = postalCode;
+            this.formattedAddress = formattedAddress;
+        }
+
+        public String getLocality() {
+            return locality;
+        }
+
+        public String getPostalCode() {
+            return postalCode;
+        }
+
+        public String getFormattedAddress() {
+            return formattedAddress;
+        }
+
+        public void setLocality(String locality) {
+            this.locality = locality;
+        }
+
+        public void setPostalCode(String postalCode) {
+            this.postalCode = postalCode;
+        }
+
+        public void setFormattedAddress(String formattedAddress) {
+            this.formattedAddress = formattedAddress;
+        }
+    }
+
+    public enum Type {
         APARTMENT,
         LOFT,
         MANOR,
-        HOUSE
+        HOUSE;
+
+        public String[] names() {
+            return Arrays.stream(values()).map(Enum::name).toArray(String[]::new);
+        }
     }
 }
